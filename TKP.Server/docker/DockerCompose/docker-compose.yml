@@ -1,0 +1,46 @@
+services:
+  tkp.server.webapi:
+    image: ${DOCKER_REGISTRY-}tkpserver
+    build:
+      context: ../../
+      dockerfile: src/TKP.Server.WebApi/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - redis  # get redis
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=tku-backend-db;Username=postgres;Password=Password12345!
+      - Redis__ConnectionString=redis:6379  # Variable redis
+    networks:
+      - productnetwork
+    restart: on-failure
+
+  postgres:
+    image: postgres:17.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "Password12345!"
+      POSTGRES_DB: tku_backend_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - productnetwork
+
+  redis:  # Config redis
+    image: redis:7.2
+    ports:
+      - "6379:6379"
+    networks:
+      - productnetwork
+    restart: always
+
+networks:
+  productnetwork:
+
+volumes:
+  postgres_data:
