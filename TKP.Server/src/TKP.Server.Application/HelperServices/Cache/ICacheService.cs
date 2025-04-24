@@ -53,7 +53,7 @@ namespace TKP.Server.Application.HelperServices.Cache
         /// Sets the current cache strategy (e.g., Redis, Memory).
         /// </summary>
         /// <param name="strategy">The caching strategy to use.</param>
-        void SetStragety(CacheStragegyEnum strategy);
+        void SetStrategy(CacheStrategyEnum strategy);
     }
 
 }

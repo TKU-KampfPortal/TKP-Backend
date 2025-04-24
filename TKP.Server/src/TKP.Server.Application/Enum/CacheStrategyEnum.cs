@@ -1,6 +1,6 @@
 ﻿namespace TKP.Server.Application.Enum
 {
-    public enum CacheStragegyEnum
+    public enum CacheStrategyEnum
     {
         Redis
     }

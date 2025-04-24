@@ -38,11 +38,11 @@ namespace TKP.Server.Infrastructure.Caching.Services
 
         public async Task RemoveKeyAsync(PrefixCacheKey prefix, string key) => await _cacheStragegy.RemoveKeyAsync(GetKeyName(prefix, key));
 
-        public void SetStragety(CacheStragegyEnum strategy)
+        public void SetStrategy(CacheStrategyEnum strategy)
         {
             _cacheStragegy = strategy switch
             {
-                CacheStragegyEnum.Redis => GetDefaultCacheStragegy() ?? throw new InvalidOperationException("Redis strategy not registered"),
+                CacheStrategyEnum.Redis => GetDefaultCacheStragegy() ?? throw new InvalidOperationException("Redis strategy not registered"),
                 _ => throw new NotImplementedException($"Cache strategy {strategy} is not implemented")
             };
         }

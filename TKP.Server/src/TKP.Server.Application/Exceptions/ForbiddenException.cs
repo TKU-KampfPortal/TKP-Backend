@@ -6,7 +6,7 @@ namespace TKP.Server.Application.Exceptions
     {
         public ForbiddenException(string message, bool transactionRollback = false) : base(message)
         {
-            Code = ApiResultErrorCodes.Conflict;
+            Code = ApiResultErrorCodes.Forbidden;
             TransactionRollback = transactionRollback;
         }
     }
