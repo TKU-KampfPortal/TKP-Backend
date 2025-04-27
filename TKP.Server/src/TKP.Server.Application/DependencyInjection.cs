@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TKP.Server.Application.HelperServices;
+using TKP.Server.Application.HelperServices.Interface;
 using TKP.Server.Application.OptionSetting;
 
 namespace TKP.Server.Application
@@ -12,7 +14,16 @@ namespace TKP.Server.Application
             var authConfigSetting = new AuthConfigSetting(builder.Configuration.GetValue<int>("AuthConfigSetting:MaxFailedLoginAttempts", 5));
 
             builder.Services.AddSingleton(authConfigSetting);
+
+            builder.Services.AddApplicationServices();
             return builder;
+        }
+
+        private static void AddApplicationServices(this IServiceCollection services)
+        {
+            // Add your application services here
+            // Example: services.AddScoped<IYourService, YourService>();
+            services.AddSingleton<IPermissionService, PermissionService>();
         }
     }
 }

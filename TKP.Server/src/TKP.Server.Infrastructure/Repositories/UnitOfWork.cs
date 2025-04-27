@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TKP.Server.Application.Repositories.Interface;
 using TKP.Server.Infrastructure.Data;
 
@@ -14,7 +15,7 @@ namespace TKP.Server.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        private async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
             if (_transaction != null)
                 return;
@@ -22,7 +23,7 @@ namespace TKP.Server.Infrastructure.Repositories
             _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         }
 
-        public async Task CommitAsync(CancellationToken cancellationToken = default)
+        private async Task CommitAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -41,7 +42,7 @@ namespace TKP.Server.Infrastructure.Repositories
             }
         }
 
-        public async Task RollbackAsync(CancellationToken cancellationToken = default)
+        private async Task RollbackAsync(CancellationToken cancellationToken = default)
         {
             if (_transaction != null)
             {
@@ -51,7 +52,7 @@ namespace TKP.Server.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        private async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return await _context.SaveChangesAsync(cancellationToken);
         }
@@ -61,5 +62,27 @@ namespace TKP.Server.Infrastructure.Repositories
             _transaction?.Dispose();
             _context.Dispose();
         }
+        public async Task ExecuteAsync(Func<Task> operation, CancellationToken cancellationToken = default)
+        {
+            var strategy = _context.Database.CreateExecutionStrategy();
+
+            await strategy.ExecuteAsync(async () =>
+            {
+                await BeginTransactionAsync(cancellationToken);
+
+                try
+                {
+                    await operation();
+                    await SaveChangesAsync(cancellationToken);
+                    await CommitAsync(cancellationToken);
+                }
+                catch
+                {
+                    await RollbackAsync(cancellationToken);
+                    throw;
+                }
+            });
+        }
+
     }
 }

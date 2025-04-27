@@ -11,6 +11,7 @@ namespace TKP.Server.Infrastructure.Caching.Services
     {
         private readonly IServiceProvider _serviceProvider;
         private ICacheStragegy _cacheStragegy;
+        private readonly double _cacheKeyInHours = 2;
         public CacheService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -22,7 +23,8 @@ namespace TKP.Server.Infrastructure.Caching.Services
         }
         public async Task<T?> GetValueAsync(PrefixCacheKey prefix, string key) => await _cacheStragegy.GetValueAsync<T>(GetKeyName(prefix, key));
 
-        public async Task SetValueAsync(PrefixCacheKey prefix, string key, T value, TimeSpan expiration) => await _cacheStragegy.SetValueAsync(GetKeyName(prefix, key), value, expiration);
+        public async Task SetValueAsync(PrefixCacheKey prefix, string key, T value, TimeSpan? expiration)
+            => await _cacheStragegy.SetValueAsync(GetKeyName(prefix, key), value, expiration ?? TimeSpan.FromHours(_cacheKeyInHours));
 
         public async Task SetValueAsync(PrefixCacheKey prefix, string key, T value, DateTime expirationDate)
         {
@@ -37,6 +39,18 @@ namespace TKP.Server.Infrastructure.Caching.Services
         }
 
         public async Task RemoveKeyAsync(PrefixCacheKey prefix, string key) => await _cacheStragegy.RemoveKeyAsync(GetKeyName(prefix, key));
+        public async Task RemoveListKeysAsync(PrefixCacheKey prefix, List<string> keys)
+        {
+            var cacheKeys = keys.Select(key => GetKeyName(prefix, key)).ToList();
+            var tasks = new List<Task>();
+
+            foreach (var key in keys)
+            {
+                tasks.Add(_cacheStragegy.RemoveKeyAsync(GetKeyName(prefix, key)));
+            }
+
+            await Task.WhenAll(tasks);
+        }
 
         public void SetStrategy(CacheStrategyEnum strategy)
         {
@@ -51,5 +65,6 @@ namespace TKP.Server.Infrastructure.Caching.Services
         {
             return $"{prefix.ToString()}_{key}";
         }
+
     }
 }

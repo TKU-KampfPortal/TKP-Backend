@@ -11,6 +11,7 @@ using TKP.Server.Infrastructure.Logging;
 using TKP.Server.Infrastructure.Mapper;
 using TKP.Server.Infrastructure.Mediator;
 using TKP.Server.Infrastructure.Repositories;
+using TKP.Server.Infrastructure.Repositories.Cache;
 using TKP.Server.Infrastructure.Services;
 using TKP.Server.Infrastructure.Swagger;
 using TKP.Server.Infrastructure.Validations;
@@ -74,8 +75,19 @@ namespace TKP.Server.Infrastructure
             // services.AddScoped<IExampleRepository,ExampleRepository>();
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>))
                     .AddScoped<ILoginHistoryRepository, LoginHistoryRepository>()
+                    .AddRepositoryWithCacheDecorator<IRolePermissionRepository, RolePermissionRepository, RolePermissionCacheRepository>()
                     .AddScoped<IUnitOfWork, UnitOfWork>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddRepositoryWithCacheDecorator<TRepository, TImplementation, TCacheDecorator>(this IServiceCollection services)
+           where TRepository : class
+           where TImplementation : class, TRepository
+           where TCacheDecorator : class, TRepository
+        {
+            services.AddScoped<TRepository, TImplementation>();
+            services.Decorate<TRepository, TCacheDecorator>();
             return services;
         }
     }

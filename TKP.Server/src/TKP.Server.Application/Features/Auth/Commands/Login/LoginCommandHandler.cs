@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TKP.Server.Application.Configurations.Commands;
 using TKP.Server.Application.Enum;
@@ -15,6 +16,8 @@ namespace TKP.Server.Application.Features.Auth.Commands.Login
     public class LoginCommandHandler : BaseCommandHandler<LoginCommand, AuthTokenResponseDto>
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+
         private readonly ILogger<LoginCommandHandler> _logger;
         private readonly ILoginHistoryRepository _loginHistoryRepository;
         private readonly ITokenService _tokenService;
@@ -27,7 +30,8 @@ namespace TKP.Server.Application.Features.Auth.Commands.Login
             , ICookieService cookieService
             , IDeviceInfoService deviceInfoService
             , AuthConfigSetting authConfigSetting
-            , ILogger<LoginCommandHandler> logger)
+            , ILogger<LoginCommandHandler> logger
+            , RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             _loginHistoryRepository = loginHistoryRepository;
@@ -36,6 +40,7 @@ namespace TKP.Server.Application.Features.Auth.Commands.Login
             _deviceInfoService = deviceInfoService;
             _authConfigSetting = authConfigSetting;
             _logger = logger;
+            _roleManager = roleManager;
         }
         protected override async Task<AuthTokenResponseDto> HandleAsync(LoginCommand request, CancellationToken cancellationToken)
         {
@@ -87,7 +92,11 @@ namespace TKP.Server.Application.Features.Auth.Commands.Login
             await _userManager.ResetAccessFailedCountAsync(user);
 
             // Get the roles of the user (e.g., admin, user, etc.)
-            var roles = await _userManager.GetRolesAsync(user);
+            var roleNames = await _userManager.GetRolesAsync(user);
+
+            var roleIds = await _roleManager.Roles.Where(Roles => roleNames.ToList().Contains(Roles.Name))
+                .Select(Roles => Roles.Id.ToString())
+                .ToListAsync(cancellationToken);
 
             // Create a new login history record
             var loginHistory = new LoginHistory
@@ -102,7 +111,7 @@ namespace TKP.Server.Application.Features.Auth.Commands.Login
 
             // Generate a refresh token and access token
             var refreshToken = GenerateRefreshToken(loginHistory);
-            var accessToken = _tokenService.GenerateAccessToken(user, roles, loginHistory);
+            var accessToken = _tokenService.GenerateAccessToken(user, roleIds, loginHistory);
 
             // Save the refresh token to the cookies (for later use)
             _cookieService.SetKey(CookieKeyEnum.RefreshToken.ToString(), refreshToken);

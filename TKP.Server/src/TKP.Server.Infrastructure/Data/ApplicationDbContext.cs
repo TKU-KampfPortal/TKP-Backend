@@ -10,6 +10,7 @@ namespace TKP.Server.Infrastructure.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public DbSet<LoginHistory> LoginHistories { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

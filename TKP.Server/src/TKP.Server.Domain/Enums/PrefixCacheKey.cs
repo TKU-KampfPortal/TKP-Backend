@@ -3,6 +3,7 @@
     public enum PrefixCacheKey
     {
         AccessToken,
-        AuthUser
+        AuthUser,
+        RolePermission
     }
 }

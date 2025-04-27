@@ -32,13 +32,15 @@ namespace TKP.Server.Infrastructure.Services
         public string GenerateAccessToken(ApplicationUser user, IEnumerable<string> roles, LoginHistory loginHistory)
         {
             var key = Encoding.ASCII.GetBytes(_jwtConfigSetting.SecretKey);
-            var claims = new[]
+            var claims = new List<Claim>
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(JwtConfigSetting.JwtTokenId, Guid.NewGuid().ToString()),
-            new Claim(JwtConfigSetting.LoginHistoryIdClaimType, loginHistory.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtConfigSetting.JwtTokenId, Guid.NewGuid().ToString()),
+                new Claim(JwtConfigSetting.LoginHistoryIdClaimType, loginHistory.Id.ToString()),
             };
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
             // Thêm các claim cho từng role của user
             var tokenHandler = new JwtSecurityTokenHandler();
 
