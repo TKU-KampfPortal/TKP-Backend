@@ -24,7 +24,7 @@ namespace TKP.Server.Application.HelperServices.Cache
         /// <param name="key">The key to store the cached item under.</param>
         /// <param name="value">The value to be cached.</param>
         /// <param name="expiration">The duration until the cached item expires.</param>
-        Task SetValueAsync(PrefixCacheKey prefix, string key, T value, TimeSpan expiration);
+        Task SetValueAsync(PrefixCacheKey prefix, string key, T value, TimeSpan? expiration);
 
         /// <summary>
         /// Caches a value with the specified prefix, key, and expiration time.
@@ -40,6 +40,13 @@ namespace TKP.Server.Application.HelperServices.Cache
         /// <param name="prefix">The prefix used to group keys logically.</param>
         /// <param name="key">The key of the cached item to remove.</param>
         Task RemoveKeyAsync(PrefixCacheKey prefix, string key);
+
+        /// <summary>
+        /// Removes a cached value by prefix and key.
+        /// </summary>
+        /// <param name="prefix">The prefix used to group keys logically.</param>
+        /// <param name="keys">The list key of the cached items to remove.</param>
+        Task RemoveListKeysAsync(PrefixCacheKey prefix, List<string> keys);
 
         /// <summary>
         /// Checks whether a cached key exists.

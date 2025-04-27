@@ -28,6 +28,10 @@ namespace TKP.Server.Infrastructure.Repositories
         {
             return await DbSet.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         }
+        public async Task<List<TEntity>> GetByListIdAsync(List<Guid> ids, CancellationToken cancellationToken = default)
+        {
+            return await DbSet.Where(e => ids.Contains(e.Id)).ToListAsync(cancellationToken);
+        }
         public async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             await DbSet.AddAsync(entity);

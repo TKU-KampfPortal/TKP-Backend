@@ -33,6 +33,13 @@ namespace TKP.Server.Application.Repositories.Interface
         Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Retrieves an entity by its unique identifier.
+        /// </summary>
+        /// <param name="ids">The list unique identifier of the entity.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>The entity if found; otherwise, null.</returns>
+        Task<List<TEntity>> GetByListIdAsync(List<Guid> ids, CancellationToken cancellationToken = default);
+        /// <summary>
         /// Adds a new entity to the database.
         /// </summary>
         /// <param name="entity">The entity to add.</param>

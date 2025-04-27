@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TKP.Server.Application.HelperServices.Cookie;
+using TKP.Server.Application.Repositories.Interface;
 using TKP.Server.Domain.Entites;
 
 namespace TKP.Server.Infrastructure.Data
@@ -22,10 +24,13 @@ namespace TKP.Server.Infrastructure.Data
             }
 
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-
             var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+            var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+            var rolePermissionRepository = services.GetRequiredService<IRolePermissionRepository>();
+            var permissionHelper = services.GetRequiredService<IPermissionService>();
 
-            await DbContextSeed.SeedDatabaseAsync(configuration, userManager, roleManager);
+            await DbContextSeed.SeedDatabaseAsync(configuration, unitOfWork, userManager, roleManager
+                , rolePermissionRepository, permissionHelper);
         }
     }
 }

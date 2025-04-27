@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace TKP.Server.Application.Features.Auth.Commands.Login
 {
-    public class LoginCommandValidator : AbstractValidator<BodyLoginCommand>
+    public class LoginCommandValidator : AbstractValidator<LoginCommand>
     {
         public LoginCommandValidator()
         {
-            RuleFor(p => p.UserName)
+            RuleFor(p => p.Body.UserName)
                 .NotEmpty()
                 .WithMessage("UserName is required")
                 .MaximumLength(50)
@@ -17,7 +17,7 @@ namespace TKP.Server.Application.Features.Auth.Commands.Login
                 .Must((command, userName) => IsValidEmailOrUserName(userName))  // Check if email or username vaid
                 .WithMessage("UserName or Email is invalid.");
 
-            RuleFor(p => p.Password)
+            RuleFor(p => p.Body.Password)
                 .NotEmpty()
                 .WithMessage("Password is required")
                 .MinimumLength(8)  // Check min password length

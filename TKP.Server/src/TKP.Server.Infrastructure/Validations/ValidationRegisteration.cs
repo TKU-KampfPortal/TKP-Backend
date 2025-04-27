@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
-using System.Reflection;
-using TKP.Server.Application.Features.Auth.Commands.Login;
+using TKP.Server.Application.Features;
 
 namespace TKP.Server.Infrastructure.Validations
 {
@@ -15,8 +14,7 @@ namespace TKP.Server.Infrastructure.Validations
                 .AddFluentValidationAutoValidation()
                 ;
 
-            builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly())
-                            .AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<IMarker>();
         }
     }
 }

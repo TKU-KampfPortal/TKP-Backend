@@ -1,8 +1,13 @@
-﻿namespace TKP.Server.Application.Models
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace TKP.Server.Application.Models
 {
     public class PaginationFilter
     {
+        [FromQuery(Name = "pageIndex")]
         public int PageIndex { get; set; }
+
+        [FromQuery(Name = "pageSize")]
         public int PageSize { get; set; }
         public PaginationFilter()
         {

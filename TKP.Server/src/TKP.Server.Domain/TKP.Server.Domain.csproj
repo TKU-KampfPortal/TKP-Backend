@@ -14,8 +14,4 @@
     <ProjectReference Include="..\TKP.Server.Core\TKP.Server.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Permissions\" />
-  </ItemGroup>
-
 </Project>

@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using TKP.Server.Application.Configurations.Commands;
 using TKP.Server.Application.Configurations.Queries;
 using TKP.Server.Application.Models;
+using TKP.Server.Core.Entities;
 
-namespace TKP.Server.WebApi.Controllers
+namespace TKP.Server.WebAPI.Controllers.Base
 {
     /// <summary>
     /// Base controller that provides common functionalities for derived API controllers.
@@ -46,6 +47,18 @@ namespace TKP.Server.WebApi.Controllers
         protected async Task<IActionResult> SendQueryAsync<TResponse>(BaseQuery<TResponse> query, CancellationToken cancellationToken = default)
         {
             return Ok(ApiResult<TResponse>.Success(await _mediator.Send(query, cancellationToken)));
+        }
+
+        /// <summary>
+        /// Sends a pagination query to the corresponding handler using MediatR.
+        /// </summary>
+        /// <typeparam name="TResponse">The type of the response expected from the handler.</typeparam>
+        /// <param name="query">The query to be sent.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>A task that represents the asynchronous operation, containing the handler's response with pagination response type.</returns>
+        protected async Task<IActionResult> SendPaginationQueryAsync<TResponse>(BaseQueryPagination<TResponse> query, CancellationToken cancellationToken = default)
+        {
+            return Ok(ApiResult<PaginationResponse<TResponse>>.Success(await _mediator.Send(query, cancellationToken)));
         }
     }
 
