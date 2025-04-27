@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using TKP.Server.Application.Configurations.Commands;
 using TKP.Server.Application.Exceptions;
-using TKP.Server.Application.HelperServices.Cookie;
+using TKP.Server.Application.HelperServices.Interface;
 using TKP.Server.Application.Repositories.Interface;
 using TKP.Server.Domain.Entites;
 

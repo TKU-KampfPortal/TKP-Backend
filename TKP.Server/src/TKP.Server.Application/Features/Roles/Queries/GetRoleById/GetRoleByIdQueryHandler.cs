@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Data;
 using TKP.Server.Application.Configurations.Queries;
 using TKP.Server.Application.Exceptions;
-using TKP.Server.Application.HelperServices;
-using TKP.Server.Application.HelperServices.Cookie;
+using TKP.Server.Application.HelperServices.Interface;
 using TKP.Server.Application.Models.Dtos.Roles;
 using TKP.Server.Application.Repositories.Interface;
 using TKP.Server.Domain.Entites;
@@ -42,7 +41,7 @@ namespace TKP.Server.Application.Features.Roles.Queries.GetRoleById
             var permissions = rolePermissions.Select(x => x.Permission).ToList();
             var response = _mapper.Map<RoleDto>(role);
 
-            response.Permissions = _permissionHelperService.GetPermisionByListKey(permissions);
+            response.Permissions = _permissionHelperService.GetPermissionByListKey(permissions);
 
             return response;
         }

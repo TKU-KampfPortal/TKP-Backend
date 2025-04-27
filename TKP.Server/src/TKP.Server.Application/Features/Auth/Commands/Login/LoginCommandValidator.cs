@@ -14,7 +14,7 @@ namespace TKP.Server.Application.Features.Auth.Commands.Login
                 .WithMessage("UserName must not exceed 50 characters")
                 .Matches(@"^[a-zA-Z0-9-._@+]+$") // Check allowed characters 
                 .WithMessage("UserName contains invalid characters.")
-                .Must((command, userName) => IsValidEmailOrUserName(userName))  // Check if email or username vaid
+                .Must((command, userName) => IsValidEmailOrUserName(userName))  // Check if email or username valid
                 .WithMessage("UserName or Email is invalid.");
 
             RuleFor(p => p.Body.Password)

@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using TKP.Server.Application.HelperServices.Cookie;
+using TKP.Server.Application.HelperServices.Interface;
 using TKP.Server.Domain.Permissions;
 
 namespace TKP.Server.Application.HelperServices
@@ -57,7 +57,7 @@ namespace TKP.Server.Application.HelperServices
             return true;
         }
 
-        public List<Permission> GetPermisionByListKey(List<string> keys)
+        public List<Permission> GetPermissionByListKey(List<string> keys)
         {
             List<Permission> permissions = new List<Permission>();
             foreach (var key in keys)
@@ -69,6 +69,7 @@ namespace TKP.Server.Application.HelperServices
 
             return permissions;
         }
+
         public Permission? GetPermissionByKey(string key)
         {
             _permissionsMap.Value.TryGetValue(key, out var permission);

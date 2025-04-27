@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TKP.Server.Application.HelperServices;
-using TKP.Server.Application.HelperServices.Cookie;
+using TKP.Server.Application.HelperServices.Interface;
 using TKP.Server.Application.OptionSetting;
 
 namespace TKP.Server.Application

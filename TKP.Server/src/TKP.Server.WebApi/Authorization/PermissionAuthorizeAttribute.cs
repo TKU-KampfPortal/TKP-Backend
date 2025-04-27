@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
-using TKP.Server.Application.HelperServices.Cookie;
+using TKP.Server.Application.HelperServices.Interface;
 using TKP.Server.Application.Repositories.Interface;
 using TKP.Server.Domain.Entites;
 

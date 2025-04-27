@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using TKP.Server.Application.Configurations.Commands;
 using TKP.Server.Application.Exceptions;
 using TKP.Server.Application.Features.Roles.Shared.Dtos;
-using TKP.Server.Application.HelperServices.Cookie;
+using TKP.Server.Application.HelperServices.Interface;
 using TKP.Server.Application.Repositories.Interface;
 using TKP.Server.Domain.Entites;
 
@@ -33,7 +33,7 @@ namespace TKP.Server.Application.Features.Roles.Commands.CreateRole
             var isRoleExisted = await _roleManager.RoleExistsAsync(request.Body.Name);
 
             if (isRoleExisted)
-                throw new NotFoundException($"Role {request.Body.Name} already exists");
+                throw new ConflictException($"Role {request.Body.Name} already exists");
 
             var permissionKeys = request.Body.PermissionKeys.Distinct().ToList();
             var isPermissionExisted = _permissionHelperService.IsListPermissionExists(permissionKeys);
