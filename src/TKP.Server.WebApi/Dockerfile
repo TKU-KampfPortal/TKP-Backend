@@ -4,8 +4,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 5000
+EXPOSE 5001
 
 
 # This stage is used to build the service project
@@ -21,13 +21,13 @@ RUN dotnet restore "./src/TKP.Server.WebApi/TKP.Server.WebApi.csproj"
 
 
 # Copy the remaining source code and build
-COPY src/ . 
-WORKDIR "/src/TKP.Server.WebAPI"
-RUN dotnet build "TKP.Server.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+COPY src/ /src/
+WORKDIR "/src/TKP.Server.WebApi"
+RUN dotnet build "TKP.Server.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Stage 3: Publish
 FROM build AS publish
-RUN dotnet publish "TKP.Server.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "TKP.Server.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Stage 4: Final
 FROM base AS final
@@ -35,8 +35,8 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 # Copy SSL certificate if Production
-ARG ENVIRONMENT=Development
-COPY ["src/TKP.Server.WebAPI/tkp_server.pfx", "/app/tkp_server.pfx"]
-RUN if [ "$ENVIRONMENT" = "Production" ]; then cp /app/tkp_server.pfx /app/tkp_server.pfx; fi
+# ARG ENVIRONMENT=Development
+# COPY ["src/TKP.Server.WebAPI/tkp_server.pfx", "/app/tkp_server.pfx"]
+# RUN if [ "$ENVIRONMENT" = "Production" ]; then cp /app/tkp_server.pfx /app/tkp_server.pfx; fi
 
 ENTRYPOINT ["dotnet", "TKP.Server.WebApi.dll"]
