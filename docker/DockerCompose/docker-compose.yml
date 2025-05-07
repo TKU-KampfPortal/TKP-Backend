@@ -5,8 +5,8 @@ services:
       context: ../../
       dockerfile: src/TKP.Server.WebApi/Dockerfile
     ports:
-      - "8080:8080"
-      - "8081:8081"
+      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - postgres
       - redis  # get redis
@@ -38,6 +38,7 @@ services:
     networks:
       - productnetwork
     restart: always
+
 
 networks:
   productnetwork:
