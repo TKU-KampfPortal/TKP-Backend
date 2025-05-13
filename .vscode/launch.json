@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Docker .NET Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-compose-up",
+            "netCore": {
+                "appProject": "${workspaceFolder}/src/TKP.Server.WebApi/TKP.Server.WebApi.csproj",
+                "enableDebugging": true
+            },
+            "dockerCompose": {
+                "up": {
+                    "detached": true,
+                    "build": true
+                },
+                "down": {
+                    "removeVolumes": true
+                }
+            },
+            "containerName": "tkp-server-webapi"
+        }
+    ]
+}
